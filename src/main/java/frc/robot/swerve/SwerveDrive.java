@@ -34,16 +34,17 @@ public class SwerveDrive {
     );
     public final AHRS gyro = new AHRS();
 
+    /*External Control Methods*/
+
+    /**Initializes odometry & performs initial setup for each swerve module. <br>
+     * This method <b>MUST</b> be called once the robot has started up to properly
+     * initialize the swerve modules.*/
     @SuppressWarnings("unused")
     public void init(){
         odometry.resetPosition(gyro.getRotation2d(), getModulePositions(), new Pose2d());
         for (SwerveModule s : modules){
             s.init();
         }
-    }
-    @SuppressWarnings("unused")
-    public void resetAllOdometry(Pose2d fieldPos){
-        odometry.resetPosition(gyro.getRotation2d(), getModulePositions(), fieldPos);
     }
     /**Commands the robot to drive
      * @param speeds the desired speeds
@@ -52,11 +53,10 @@ public class SwerveDrive {
     @SuppressWarnings("unused")
     public void driveSwerve(ChassisSpeeds speeds, boolean isFieldRelative){
         if (isFieldRelative){
-            driveFieldRelative(speeds);
+            speeds = adjustFieldRelativeSpeeds(speeds);
         }
-        else{
-            driveRobotRelative(speeds);
-        }
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        applyUnadjustedModuleStates(states);
     }
     /**[WIP- field relative custom centers are untested / may be handled incorrectly] <br>
      * Sets the target state of the swerve drive, with a custom center of rotation.
@@ -67,43 +67,45 @@ public class SwerveDrive {
     @SuppressWarnings("unused")
     public void driveSwerveAboutPoint(ChassisSpeeds speeds, Translation2d center, boolean isFieldRelative){
         if (isFieldRelative){
-            Translation2d v = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
-            v = v.rotateBy(gyro.getRotation2d().unaryMinus());
-            speeds = new ChassisSpeeds(
-                    v.getX(),
-                    v.getY(),
-                    speeds.omegaRadiansPerSecond
-            );
-            SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds, center);
-            applyUnadjustedModuleStates(states);
+            speeds = adjustFieldRelativeSpeeds(speeds);
         }
-        else{
-            SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds, center);
-            applyUnadjustedModuleStates(states);
-        }
-    }
-    protected void driveRobotRelative(ChassisSpeeds speeds){
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds, center);
         applyUnadjustedModuleStates(states);
     }
-    protected void driveFieldRelative(ChassisSpeeds speeds){
-        Translation2d v = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
-        v = v.rotateBy(gyro.getRotation2d().unaryMinus());
-        speeds = new ChassisSpeeds(
-                v.getX(),
-                v.getY(),
-                speeds.omegaRadiansPerSecond
-        );
+    public void driveSwerveOpenLoop(ChassisSpeeds speeds, boolean isFieldRelative){
+        if (isFieldRelative){
+            speeds = adjustFieldRelativeSpeeds(speeds);
+        }
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-        applyUnadjustedModuleStates(states);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, MaxModuleMetersPerSecond);
+        for (ModuleOrdering ord : ModuleOrdering.values()){
+            SwerveModuleState s = states[ord.ordinal()];
+            modules[ord.ordinal()].setOpenLoop(s.angle, s.speedMetersPerSecond / MaxModuleMetersPerSecond);
+        }
     }
+
+    /*Internal control methods*/
     protected void applyUnadjustedModuleStates(SwerveModuleState[] states){
         SwerveDriveKinematics.desaturateWheelSpeeds(states, MaxModuleMetersPerSecond);
         for (ModuleOrdering ord : ModuleOrdering.values()){
             modules[ord.ordinal()].setTargetState(states[ord.ordinal()]);
         }
     }
+    /**Converts the fieldRelative speeds to be robot relative
+     * @param fieldRelative the field relative speeds
+     * @return robot relative speeds
+     */
+    protected ChassisSpeeds adjustFieldRelativeSpeeds(ChassisSpeeds fieldRelative){
+        Translation2d v = new Translation2d(fieldRelative.vxMetersPerSecond, fieldRelative.vyMetersPerSecond);
+        v = v.rotateBy(gyro.getRotation2d().unaryMinus());
+        return new ChassisSpeeds(
+                v.getX(),
+                v.getY(),
+                fieldRelative.omegaRadiansPerSecond
+        );
+    }
 
+    /*Odometry & Position Tracking Methods*/
     public SwerveModulePosition[] getModulePositions(){
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (ModuleOrdering ord : ModuleOrdering.values()){
@@ -111,12 +113,23 @@ public class SwerveDrive {
         }
         return positions;
     }
+    public SwerveModuleState[] getCurrentState(){
+        SwerveModuleState[] states = new SwerveModuleState[4];
+        for (ModuleOrdering ord : ModuleOrdering.values()){
+            states[ord.ordinal()] = modules[ord.ordinal()].getState();
+        }
+        return states;
+    }
     /** Must be called from a subsystem's periodic loop or otherwise consistently run.
      * Odometry tracking & positions will not be correct / reliable otherwise
      */
     @SuppressWarnings("unused")
     public void updateOdometry(){
         odometry.update(gyro.getRotation2d(), getModulePositions());
+    }
+    @SuppressWarnings("unused")
+    public void resetAllOdometry(Pose2d fieldPos){
+        odometry.resetPosition(gyro.getRotation2d(), getModulePositions(), fieldPos);
     }
     /** Stops the swerve drive & sets its target speeds to {0, 0, 0}*/
     @SuppressWarnings("unused")

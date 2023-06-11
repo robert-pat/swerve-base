@@ -3,6 +3,7 @@ package frc.robot.swerve;
 public class SwMath {
     final static double TicksToDegrees = 1.05;
     final static double TicksToMSP = 1.05;
+    final static double TicksToMeters = 1.05;
     static double nativeToDegrees(double n){
         return n *  TicksToDegrees;
     }
@@ -14,5 +15,8 @@ public class SwMath {
     }
     static double nativeToMetersPerSecond(double n) {
         return n * (1d / TicksToMSP);
+    }
+    static double nativeToMeters(double n){
+        return n * TicksToMeters;
     }
 }

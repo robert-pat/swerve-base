@@ -1,11 +1,15 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.RobotBase;
+
+import java.util.Optional;
 
 public class SwerveModule {
     final SwerveModuleSetting settings;
@@ -50,17 +54,24 @@ public class SwerveModule {
             ControlMode.Velocity,
             SwMath.MeterPerSecondToNative(state.speedMetersPerSecond)
         );
-        // calculate an offset between curr & target headings, add offset to current pos & target it
+        // Calculate an offset between curr & target headings, add offset to current pos & target it
+        // The offset is guaranteed to be mod 360 because of WPIlib's internal matrix math & the .minus() method
         steerMotor.set(
             ControlMode.Position,
-            SwMath.nativeToDegrees(
+            SwMath.degreesToNative(
                 state.angle.minus(getCurrentAngle()).getDegrees() // may need to invert angle diff
             ) + steerMotor.getSelectedSensorPosition()
         );
     }
     protected SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
-                SwMath.nativeToMetersPerSecond(driveMotor.getSelectedSensorPosition()),
+                SwMath.nativeToMeters(driveMotor.getSelectedSensorPosition()),
+                getCurrentAngle()
+        );
+    }
+    protected SwerveModuleState getState(){
+        return new SwerveModuleState(
+                SwMath.nativeToMetersPerSecond(driveMotor.getSelectedSensorVelocity()),
                 getCurrentAngle()
         );
     }
@@ -71,5 +82,27 @@ public class SwerveModule {
         setTargetState(new SwerveModuleState());
         driveMotor.neutralOutput();
         steerMotor.neutralOutput();
+    }
+
+    /**Runs the module in "open loop" mode, w/o a PID controller on the drive motor. <br>
+     * Note that heading control of any kind requires a tuned PID controller for the steer motor.
+     * @param heading the heading the module wheel should face
+     * @param dPower how much power for the drive motor, in % output
+     */
+    protected void setOpenLoop(Rotation2d heading, double dPower){
+        driveMotor.set(dPower);
+        steerMotor.set(
+            ControlMode.Position,
+            SwMath.degreesToNative(heading.minus(getCurrentAngle()).getDegrees()) + steerMotor.getSelectedSensorPosition()
+        );
+    }
+
+    /**Runs the module in the simplest possible mode, with direct output called to both motors
+     * @param dPower the drive power, in & output
+     * @param sPower the steer power, in % output
+     */
+    protected void setRaw(double dPower, double sPower){
+        driveMotor.set(dPower);
+        steerMotor.set(sPower);
     }
 }
