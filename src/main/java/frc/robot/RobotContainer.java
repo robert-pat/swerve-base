@@ -20,9 +20,9 @@ import frc.robot.simulation.SimulationRunner;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    SimulationRunner s;
-    XboxController controller = new XboxController(0);
-    SendableChooser<DriveMode> chooser = new SendableChooser<>();
+    final SimulationRunner s;
+    final XboxController controller = new XboxController(0);
+    final SendableChooser<DriveMode> chooser = new SendableChooser<>();
     public RobotContainer() {
         for (DriveMode m : DriveMode.values()){
             chooser.addOption(m.toString(), m);

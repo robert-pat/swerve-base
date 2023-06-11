@@ -15,10 +15,10 @@ import java.util.function.Supplier;
 public class SimulationRunner extends SubsystemBase {
     DoubleSupplier[] axis;
     boolean isAxisRegistered = false;
-    SwerveDrive drive = new SwerveDrive();
-    SwerveSimDisplay display = new SwerveSimDisplay(drive);
-    Supplier<DriveMode> modeController;
-    BooleanPublisher activityDisplay = NetworkTableInstance.getDefault()
+    final SwerveDrive drive = new SwerveDrive();
+    final SwerveSimDisplay display = new SwerveSimDisplay(drive);
+    final Supplier<DriveMode> modeController;
+    final BooleanPublisher activityDisplay = NetworkTableInstance.getDefault()
                                                             .getTable("swerve-data")
                                                             .getBooleanTopic("isActive")
                                                             .publish();
