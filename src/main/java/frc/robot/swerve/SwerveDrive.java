@@ -21,16 +21,21 @@ public class SwerveDrive {
             new SwerveModule(SwerveConstants.ModuleSettings.FrontRight),
             new SwerveModule(SwerveConstants.ModuleSettings.BackRight)
     };
-    public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+    protected final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             FrontLeft.Position,
             BackLeft.Position,
             FrontRight.Position,
             BackRight.Position
     );
-    public final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
+    protected final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
             kinematics,
             new Rotation2d(),
-            new SwerveModulePosition[4]
+            new SwerveModulePosition[]{
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition()
+            }
     );
     public final AHRS gyro = new AHRS();
 
@@ -130,6 +135,12 @@ public class SwerveDrive {
     @SuppressWarnings("unused")
     public void resetAllOdometry(Pose2d fieldPos){
         odometry.resetPosition(gyro.getRotation2d(), getModulePositions(), fieldPos);
+    }
+    public Pose2d getFieldPosition(){
+        return odometry.getPoseMeters();
+    }
+    public ChassisSpeeds getRobotRelativeSpeeds(){
+        return kinematics.toChassisSpeeds(getCurrentState());
     }
     /** Stops the swerve drive & sets its target speeds to {0, 0, 0}*/
     @SuppressWarnings("unused")

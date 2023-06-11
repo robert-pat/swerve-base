@@ -28,13 +28,13 @@ public class SwerveModule {
 
         //TODO: CAN status frame configurations
 
-        driveMotor.config_kP(0, SwerveModuleSetting.DrivePIDConstants[0]);
-        driveMotor.config_kI(0, SwerveModuleSetting.DrivePIDConstants[1]);
-        driveMotor.config_kD(0, SwerveModuleSetting.DrivePIDConstants[2]);
+        driveMotor.config_kP(0, SwerveConstants.DrivePIDConstants[0]);
+        driveMotor.config_kI(0, SwerveConstants.DrivePIDConstants[1]);
+        driveMotor.config_kD(0, SwerveConstants.DrivePIDConstants[2]);
 
-        steerMotor.config_kP(0, SwerveModuleSetting.SteerPIDConstants[0]);
-        steerMotor.config_kI(0, SwerveModuleSetting.SteerPIDConstants[1]);
-        steerMotor.config_kD(0, SwerveModuleSetting.SteerPIDConstants[2]);
+        steerMotor.config_kP(0, SwerveConstants.SteerPIDConstants[0]);
+        steerMotor.config_kI(0, SwerveConstants.SteerPIDConstants[1]);
+        steerMotor.config_kD(0, SwerveConstants.SteerPIDConstants[2]);
         steerMotor.setSelectedSensorPosition(
                 SwMath.nativeToDegrees(headingEncoder.getAbsolutePosition())
         );

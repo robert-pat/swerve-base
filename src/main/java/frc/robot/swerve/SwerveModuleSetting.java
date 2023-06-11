@@ -15,8 +15,6 @@ public class SwerveModuleSetting {
     final CANCoderConfiguration EncoderConfig = new CANCoderConfiguration();
     final ModuleOrdering Ordering;
     public final Translation2d Position;
-    public static final double[] DrivePIDConstants = {0, 0, 0};
-    public static final double[] SteerPIDConstants = {0, 0, 0};
 
     /** Holds all the settings objects (and specific values) for configuring a swerve module
      * @param dID drive motor CAN ID

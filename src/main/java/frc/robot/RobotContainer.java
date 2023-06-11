@@ -5,7 +5,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.simulation.DriveMode;
+import frc.robot.simulation.SimulationRunner;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -13,30 +19,40 @@ import edu.wpi.first.wpilibj2.command.Command;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer
-{
-    public RobotContainer()
-    {
+public class RobotContainer {
+    SimulationRunner s;
+    XboxController controller = new XboxController(0);
+    SendableChooser<DriveMode> chooser = new SendableChooser<>();
+    public RobotContainer() {
+        for (DriveMode m : DriveMode.values()){
+            chooser.addOption(m.toString(), m);
+        }
+        chooser.setDefaultOption("Default", DriveMode.VanceDrive);
+        SmartDashboard.putData(chooser);
+
+        s = new SimulationRunner(() -> chooser.getSelected());
+
         // Configure the trigger bindings
         configureBindings();
     }
-    
-    
-    /** Use this method to define your trigger->command mappings. */
-    private void configureBindings()
-    {
 
+    /** Use this method to define your trigger->command mappings. */
+    private void configureBindings() {
+        DriverStation.silenceJoystickConnectionWarning(true);
+        s.registerAxis(
+                ()-> controller.getRawAxis(0),
+                ()-> controller.getRawAxis(1),
+                ()-> controller.getRawAxis(2),
+                ()-> controller.getRawAxis(3)
+        );
     }
-    
     
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand()
-    {
-        // TODO: Implement properly
+    public Command getAutonomousCommand() {
         return null;
     }
 }
