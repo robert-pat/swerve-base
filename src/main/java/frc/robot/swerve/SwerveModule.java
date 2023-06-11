@@ -1,15 +1,11 @@
 package frc.robot.swerve;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.RobotBase;
-
-import java.util.Optional;
 
 public class SwerveModule {
     final SwerveModuleSetting settings;
@@ -75,6 +71,7 @@ public class SwerveModule {
                 getCurrentAngle()
         );
     }
+    @SuppressWarnings("unused")
     protected void resetPosition(){
         driveMotor.setSelectedSensorPosition(0);
     }
@@ -101,6 +98,7 @@ public class SwerveModule {
      * @param dPower the drive power, in & output
      * @param sPower the steer power, in % output
      */
+    @SuppressWarnings("unused")
     protected void setRaw(double dPower, double sPower){
         driveMotor.set(dPower);
         steerMotor.set(sPower);
