@@ -36,38 +36,38 @@ public class SwerveModule {
         steerMotor.config_kI(0, SwerveConstants.SteerPIDConstants[1]);
         steerMotor.config_kD(0, SwerveConstants.SteerPIDConstants[2]);
         steerMotor.setSelectedSensorPosition(
-                SwMath.nativeToDegrees(headingEncoder.getAbsolutePosition())
+                SwerveConstants.nativeToDegrees(headingEncoder.getAbsolutePosition())
         );
     }
     protected Rotation2d getCurrentAngle(){
         return Rotation2d.fromDegrees(
-            SwMath.nativeToDegrees(steerMotor.getSelectedSensorPosition())
+            SwerveConstants.nativeToDegrees(steerMotor.getSelectedSensorPosition())
         );
     }
     protected void setTargetState(SwerveModuleState state){
         state = SwerveModuleState.optimize(state, getCurrentAngle());
         driveMotor.set(
             ControlMode.Velocity,
-            SwMath.MeterPerSecondToNative(state.speedMetersPerSecond)
+            SwerveConstants.MeterPerSecondToNative(state.speedMetersPerSecond)
         );
         // Calculate an offset between curr & target headings, add offset to current pos & target it
         // The offset is guaranteed to be mod 360 because of WPIlib's internal matrix math & the .minus() method
         steerMotor.set(
             ControlMode.Position,
-            SwMath.degreesToNative(
+            SwerveConstants.degreesToNative(
                 state.angle.minus(getCurrentAngle()).getDegrees() // may need to invert angle diff
             ) + steerMotor.getSelectedSensorPosition()
         );
     }
     protected SwerveModulePosition getPosition(){
         return new SwerveModulePosition(
-                SwMath.nativeToMeters(driveMotor.getSelectedSensorPosition()),
+                SwerveConstants.nativeToMeters(driveMotor.getSelectedSensorPosition()),
                 getCurrentAngle()
         );
     }
     protected SwerveModuleState getState(){
         return new SwerveModuleState(
-                SwMath.nativeToMetersPerSecond(driveMotor.getSelectedSensorVelocity()),
+                SwerveConstants.nativeToMetersPerSecond(driveMotor.getSelectedSensorVelocity()),
                 getCurrentAngle()
         );
     }
@@ -90,7 +90,7 @@ public class SwerveModule {
         driveMotor.set(dPower);
         steerMotor.set(
             ControlMode.Position,
-            SwMath.degreesToNative(heading.minus(getCurrentAngle()).getDegrees()) + steerMotor.getSelectedSensorPosition()
+            SwerveConstants.degreesToNative(heading.minus(getCurrentAngle()).getDegrees()) + steerMotor.getSelectedSensorPosition()
         );
     }
 

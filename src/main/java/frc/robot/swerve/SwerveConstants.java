@@ -5,6 +5,27 @@ import edu.wpi.first.math.geometry.Translation2d;
 public interface SwerveConstants {
     double[] DrivePIDConstants = {0.5, 0, 0.02};
     double[] SteerPIDConstants = {0.5, 0, 0.02};
+    double TicksToDegrees = 1.05;
+    double TicksToMSP = 1.05;
+    double TicksToMeters = 1.05;
+    double ChassisDiameter = 0.5028943428;
+    double MaxModuleMetersPerSecond = 4.572;
+    double MaxRadiansPerSecond = MaxModuleMetersPerSecond / ChassisDiameter;
+    static double nativeToDegrees(double n){
+        return n * TicksToDegrees;
+    }
+    static double degreesToNative(double d){
+        return d * (1.0 / TicksToDegrees);
+    }
+    static double MeterPerSecondToNative(double mps){
+        return mps * TicksToMSP;
+    }
+    static double nativeToMetersPerSecond(double n) {
+        return n * (1d / TicksToMSP);
+    }
+    static double nativeToMeters(double n){
+        return n * TicksToMeters;
+    }
 
     interface ModuleSettings{
         SwerveModuleSetting FrontLeft = new SwerveModuleSetting(
@@ -28,7 +49,4 @@ public interface SwerveConstants {
                 new Translation2d(-0.3556, -0.3556)
         );
     }
-    double ChassisDiameter = 0.5028943428;
-    double MaxModuleMetersPerSecond = 4.572;
-    double MaxRadiansPerSecond = MaxModuleMetersPerSecond / ChassisDiameter;
 }
