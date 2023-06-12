@@ -5,6 +5,7 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.swerve.ModuleOrdering;
 
 public class SwerveModuleSetting {
     final int DriveCANID;

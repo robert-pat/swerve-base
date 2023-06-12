@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.swerve.SwerveConstants;
 import frc.robot.swerve.SwerveDrive;
-import frc.robot.swerve.SwerveSimDisplay;
+import frc.robot.swerve.SwerveDisplay;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -16,7 +16,7 @@ public class SimulationRunner extends SubsystemBase {
     DoubleSupplier[] axis;
     boolean isAxisRegistered = false;
     final SwerveDrive drive = new SwerveDrive();
-    final SwerveSimDisplay display = new SwerveSimDisplay(drive);
+    final SwerveDisplay display = new SwerveDisplay(drive);
     final Supplier<DriveMode> modeController;
     final BooleanPublisher activityDisplay = NetworkTableInstance.getDefault()
                                                             .getTable("swerve-data")

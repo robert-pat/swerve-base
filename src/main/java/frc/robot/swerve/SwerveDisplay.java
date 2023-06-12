@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
-public class SwerveSimDisplay {
+public class SwerveDisplay {
     final static int DisplayWidth = 50;
     final static int DisplayHeight = 50;
     final static int DriveBaseCornerLength = 15;
@@ -36,7 +36,7 @@ public class SwerveSimDisplay {
             new MechanismLigament2d("FrontRightWheel", MinWheelLength, 90, 5, new Color8Bit(Color.kRed)),
             new MechanismLigament2d("BackRightWheel", MinWheelLength, 90, 5, new Color8Bit(Color.kRed))
     };
-    public SwerveSimDisplay(SwerveDrive drive){
+    public SwerveDisplay(SwerveDrive drive){
         this.drive = drive;
         Mechanism2d mechanism = new Mechanism2d(
                 DisplayWidth,
