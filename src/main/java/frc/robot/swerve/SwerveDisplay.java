@@ -60,6 +60,8 @@ public class SwerveDisplay {
         kinematicsVelPublisher = t.getDoubleArrayTopic("chassis_velocity").publish();
     }
 
+    /** Currently doesn't display anything b/c PID constants are 0 and/or Falcons don't simulate
+     * their closed loop outputs in the simulator. The display code is fine. (tho wheel angles are untested) */
     public void updateDisplay(){
         SwerveModuleState[] states = drive.getCurrentState();
         for (ModuleOrdering ord : ModuleOrdering.values()){

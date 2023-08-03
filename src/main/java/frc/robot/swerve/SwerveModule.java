@@ -76,6 +76,8 @@ public class SwerveModule {
         driveMotor.setSelectedSensorPosition(0);
     }
     protected void stop(){
+        // Leaving this as a [0.0 m/s, 0 degree] state is ok b/c the neutralOutput() call
+        // means the modules won't actually go to 0 degrees, they'll stay neutral until given a new state
         setTargetState(new SwerveModuleState());
         driveMotor.neutralOutput();
         steerMotor.neutralOutput();
