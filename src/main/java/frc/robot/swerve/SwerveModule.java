@@ -36,6 +36,7 @@ public class SwerveModule {
         steerMotor.config_kI(0, SwerveConstants.SteerPIDConstants[1]);
         steerMotor.config_kD(0, SwerveConstants.SteerPIDConstants[2]);
         steerMotor.setSelectedSensorPosition(
+                // this might need to be degreesToNative() -future robert (wrote this months ago)
                 SwerveConstants.nativeToDegrees(headingEncoder.getAbsolutePosition())
         );
     }
