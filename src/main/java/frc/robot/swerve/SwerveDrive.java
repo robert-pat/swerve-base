@@ -10,8 +10,8 @@ import static frc.robot.swerve.SwerveConstants.MaxModuleMetersPerSecond;
 import static frc.robot.swerve.SwerveConstants.ModuleSettings.*;
 /**A 4 module swerve drive. Uses Falcon500s for both the drive and steer motors.
  * NOTE: Certain methods <b>MUST</b> be called for proper functionality: <br>
- * init() <br>
- * updateOdometry()
+ * 1) init() <br>
+ * 2) updateOdometry()
  */
 @SuppressWarnings("unused")
 public class SwerveDrive {

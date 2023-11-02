@@ -8,7 +8,7 @@ public interface SwerveConstants {
     double TicksToDegrees = 1.05;
     double TicksToMSP = 1.05;
     double TicksToMeters = 1.05;
-    double ChassisDiameter = 0.5028943428;
+    double ChassisDiameter = 0.5028943428; //TODO: should this be radius?
     double MaxModuleMetersPerSecond = 4.572;
     double MaxRadiansPerSecond = MaxModuleMetersPerSecond / ChassisDiameter;
     static double nativeToDegrees(double n){

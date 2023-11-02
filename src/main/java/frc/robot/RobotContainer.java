@@ -30,7 +30,7 @@ public class RobotContainer {
         chooser.setDefaultOption("Default", DriveMode.VanceDrive);
         SmartDashboard.putData(chooser);
 
-        s = new SimulationRunner(() -> chooser.getSelected());
+        s = new SimulationRunner(chooser::getSelected);
 
         // Configure the trigger bindings
         configureBindings();

@@ -37,7 +37,7 @@ public class SwerveModule {
         steerMotor.config_kD(0, SwerveConstants.SteerPIDConstants[2]);
         steerMotor.setSelectedSensorPosition(
                 // this might need to be degreesToNative() -future robert (wrote this months ago)
-                SwerveConstants.nativeToDegrees(headingEncoder.getAbsolutePosition())
+                SwerveConstants.degreesToNative(headingEncoder.getAbsolutePosition())
         );
     }
     protected Rotation2d getCurrentAngle(){
@@ -87,7 +87,7 @@ public class SwerveModule {
     /**Runs the module in "open loop" mode, w/o a PID controller on the drive motor. <br>
      * Note that heading control of any kind requires a tuned PID controller for the steer motor.
      * @param heading the heading the module wheel should face
-     * @param dPower how much power for the drive motor, in % output
+     * @param dPower how much power for the drive motor, on  the interval [-1,1]
      */
     protected void setOpenLoop(Rotation2d heading, double dPower){
         driveMotor.set(dPower);
@@ -102,6 +102,7 @@ public class SwerveModule {
      * @param sPower the steer power, in % output
      */
     @SuppressWarnings("unused")
+    @Deprecated
     protected void setRaw(double dPower, double sPower){
         driveMotor.set(dPower);
         steerMotor.set(sPower);
