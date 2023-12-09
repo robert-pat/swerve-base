@@ -4,10 +4,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.swerve.SwerveConstants;
-import frc.robot.swerve.SwerveDrive;
 import frc.robot.swerve.SwerveDisplay;
+import frc.robot.swerve.SwerveDrive;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -24,7 +25,14 @@ public class SimulationRunner extends SubsystemBase {
                                                             .publish();
     public SimulationRunner(Supplier<DriveMode> supplier){
         this.modeController = supplier;
+        if (RobotBase.isReal()) {
+            DriverStation.reportError(
+                    "Swerve Simulation Runner Constructed, but robot is not simulated!",
+                    false
+            );
+        }
     }
+    @SuppressWarnings("unused")
     public SimulationRunner(){
         this(()-> DriveMode.VanceDrive);
     }
